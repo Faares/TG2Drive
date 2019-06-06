@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -13,18 +14,23 @@ import (
 	TGBotAPI "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
+var ConfigFile *string
+var BotConfig Config
+var bot TGBotAPI.BotAPI
+
 func crashReport(updateError TGBotAPI.Update) {
-	f, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
-
-	if err != nil {
-		panic(err)
-	}
-
-	defer f.Close()
-
-	logger := log.New(f, "[ERROR]", log.LstdFlags)
 
 	if err := recover(); err != nil {
+		f, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+
+		if err != nil {
+			panic(err)
+		}
+
+		defer f.Close()
+
+		logger := log.New(f, "[ERROR]", log.LstdFlags)
+
 		logger.Println(err)
 		logger.Println("Message")
 		logger.Println(spew.Sdump(updateError))
@@ -39,10 +45,12 @@ func main() {
 
 	Authrized := make(map[string]string)
 
-	config := getConfig()
+	ConfigFile = flag.String("config", "./Config.json", "Config File")
+	flag.Parse()
+	BotConfig = getConfig(*ConfigFile)
 
 	// Initalize bot
-	bot, err := TGBotAPI.NewBotAPI(config.Telegram.Token)
+	bot, err := TGBotAPI.NewBotAPI(BotConfig.Telegram.Token)
 	if err != nil {
 		panic(err)
 	}
@@ -61,13 +69,13 @@ func main() {
 		defer crashReport(update)
 
 		// check if message from authirzed users and not null
-		if _, ok := config.Telegram.Authrized[update.Message.From.UserName]; !ok || update.Message == nil {
+		if _, ok := BotConfig.Telegram.Authrized[update.Message.From.UserName]; !ok || update.Message == nil {
 			log.Println("Not Authrized")
 			continue
 		}
 
 		// We know now the user is allowed to contact the bot, then let's get it data.
-		userData := config.Telegram.Authrized[update.Message.From.UserName]
+		userData := BotConfig.Telegram.Authrized[update.Message.From.UserName]
 
 		// require password
 		if update.Message.Command() == "login" {
@@ -110,6 +118,8 @@ func main() {
 
 			fmt.Println(photo)
 		}
+
+		bot.Send(TGBotAPI.NewMessage(update.Message.Chat.ID, "No Photo? No Video? .. Hmm"))
 
 	}
 }

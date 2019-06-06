@@ -34,8 +34,8 @@ type Config struct {
 	Drive    Drive    `json:"drive"`
 }
 
-func getConfig() Config {
-	data, err := ioutil.ReadFile("Config.json")
+func getConfig(file string) Config {
+	data, err := ioutil.ReadFile(file)
 
 	if err != nil {
 		panic(err)
