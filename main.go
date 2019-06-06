@@ -6,10 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
-	"runtime/debug"
-
-	"github.com/davecgh/go-spew/spew"
 
 	TGBotAPI "github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -17,33 +13,11 @@ import (
 var ConfigFile *string
 var BotConfig Config
 var bot TGBotAPI.BotAPI
-
-func crashReport(updateError TGBotAPI.Update) {
-
-	if err := recover(); err != nil {
-		f, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
-
-		if err != nil {
-			panic(err)
-		}
-
-		defer f.Close()
-
-		logger := log.New(f, "[ERROR]", log.LstdFlags)
-
-		logger.Println(err)
-		logger.Println("Message")
-		logger.Println(spew.Sdump(updateError))
-		logger.Println("Stack:")
-		logger.Println(string(debug.Stack()))
-		logger.Println("===================================")
-	}
-
-}
+var Authorized map[string]string
 
 func main() {
 
-	Authrized := make(map[string]string)
+	Authorized := make(map[string]string)
 
 	ConfigFile = flag.String("config", "./Config.json", "Config File")
 	flag.Parse()
@@ -69,13 +43,13 @@ func main() {
 		defer crashReport(update)
 
 		// check if message from authirzed users and not null
-		if _, ok := BotConfig.Telegram.Authrized[update.Message.From.UserName]; !ok || update.Message == nil {
+		if _, ok := BotConfig.Telegram.Authorized[update.Message.From.UserName]; !ok || update.Message == nil {
 			log.Println("Not Authrized")
 			continue
 		}
 
 		// We know now the user is allowed to contact the bot, then let's get it data.
-		userData := BotConfig.Telegram.Authrized[update.Message.From.UserName]
+		userData := BotConfig.Telegram.Authorized[update.Message.From.UserName]
 
 		// require password
 		if update.Message.Command() == "login" {
@@ -84,7 +58,7 @@ func main() {
 			h.Write([]byte(update.Message.CommandArguments()))
 
 			if hex.EncodeToString(h.Sum(nil)) == userData.Password {
-				Authrized[string(update.Message.Chat.ID)] = userData.Name
+				Authorized[string(update.Message.Chat.ID)] = userData.Name
 				message := TGBotAPI.NewMessage(update.Message.Chat.ID, fmt.Sprintf("DONE, I KNOW U NOW! Welcome %s", userData.Name))
 				bot.Send(message)
 			} else {
@@ -96,7 +70,7 @@ func main() {
 		}
 
 		// if no password .. please auth, or go to hell
-		if _, ok := Authrized[string(update.Message.Chat.ID)]; !ok {
+		if _, ok := Authorized[string(update.Message.Chat.ID)]; !ok {
 			message := TGBotAPI.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Greeting %s, Please use command /login to authicate u..", userData.Name))
 			bot.Send(message)
 			continue

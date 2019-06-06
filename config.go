@@ -5,6 +5,11 @@ import (
 	"io/ioutil"
 )
 
+type Config struct {
+	Telegram Telegram `json:"telegram"`
+	Drive    Drive    `json:"drive"`
+}
+
 type User struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
@@ -12,7 +17,7 @@ type User struct {
 }
 
 type Telegram struct {
-	Token     string          `json:"token"`
+	Token      string          `json:"token"`
 	Authorized map[string]User `json:"authorized"`
 }
 
@@ -27,11 +32,6 @@ type Drive struct {
 	TokenUri                    string
 	Auth_Provider_x509_Cert_Url string
 	Client_x509_Cert_Url        string
-}
-
-type Config struct {
-	Telegram Telegram `json:"telegram"`
-	Drive    Drive    `json:"drive"`
 }
 
 func getConfig(file string) Config {

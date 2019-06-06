@@ -10,7 +10,7 @@ first setup configuration file, in JSON foramt:
     "telegram":
     {
         "token":"BOT TOKEN", 
-        "authrized":{ // users can contact the bot, unlisted users will be ignored
+        "authorized":{ // users can contact the bot, unlisted users will be ignored
             "UserName#1":{ // "UserName#1" telegram username
                 "name":"Name#1", // using in replay message
                 "password":"Password", // to login
