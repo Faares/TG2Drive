@@ -5,7 +5,7 @@ Telegram Bot for uploading files to Google Drive
 # Usage
 
 first setup configuration file, in JSON foramt:
-```json
+```
 {
     "telegram":
     {
@@ -31,9 +31,16 @@ first setup configuration file, in JSON foramt:
 }
 ```
 then:
-```console
+```bash
 go install
 TG2Drive -config=/path/to/config.json
 ```
+
+# Development
+create `Config.json` in work directory, and then:
+```bash
+./dev
+```
+
 
 have fun ;)
