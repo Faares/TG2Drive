@@ -4,17 +4,17 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"log"
 	"strconv"
 
 	TGBotAPI "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
-func auth(bot *TGBotAPI.BotAPI, update TGBotAPI.Update) (isAuth bool, user User) {
+func auth(update TGBotAPI.Update) (isAuth bool, user User) {
 
 	// check if message from authirzed users and not null
 	if _, ok := BotConfig.Telegram.Authorized[update.Message.From.UserName]; !ok || update.Message == nil {
-		log.Println("Not Authrized")
+		notAuthorizedReport(update)
+		fmt.Println("Not Authorized")
 		return false, User{}
 	}
 
@@ -41,7 +41,7 @@ func auth(bot *TGBotAPI.BotAPI, update TGBotAPI.Update) (isAuth bool, user User)
 
 	// if no password .. please auth, or go to hell
 	if _, ok := Authorized[string(update.Message.Chat.ID)]; !ok {
-		message := TGBotAPI.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Greeting %s, Please use command /login to authicate u..", userData.Name))
+		message := TGBotAPI.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Greeting %s, Please use command /login to authenticate u..", userData.Name))
 		bot.Send(message)
 	}
 

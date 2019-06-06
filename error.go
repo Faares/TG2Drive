@@ -12,7 +12,7 @@ import (
 func crashReport(updateError TGBotAPI.Update) {
 
 	if err := recover(); err != nil {
-		f, err := os.OpenFile("error.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+		f, err := os.OpenFile("errors.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
 
 		if err != nil {
 			panic(err)
@@ -30,4 +30,19 @@ func crashReport(updateError TGBotAPI.Update) {
 		logger.Println("===================================")
 	}
 
+}
+
+func notAuthorizedReport(update TGBotAPI.Update) {
+	f, err := os.OpenFile("not_authorized.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer f.Close()
+
+	logger := log.New(f, "[Security]", log.LstdFlags)
+	logger.Println("Not Authorized Access")
+	logger.Println("data:")
+	logger.Println(spew.Sdump(update))
 }
