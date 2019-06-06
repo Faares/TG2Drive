@@ -13,7 +13,7 @@ type User struct {
 
 type Telegram struct {
 	Token     string          `json:"token"`
-	Authrized map[string]User `json:"authrized"`
+	Authorized map[string]User `json:"authorized"`
 }
 
 type Drive struct {
