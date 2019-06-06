@@ -28,10 +28,7 @@ func auth(bot *TGBotAPI.BotAPI, update TGBotAPI.Update) (isAuth bool, user User)
 		h.Write([]byte(update.Message.CommandArguments()))
 
 		if hex.EncodeToString(h.Sum(nil)) == userData.Password {
-			fmt.Println("=====IN PASSWORD====")
-			// @TODO : bug, fix it..
 			Authorized[strconv.FormatInt(update.Message.Chat.ID, 10)] = userData.Name
-			fmt.Println("=====SKIP PASSWORD====")
 			message := TGBotAPI.NewMessage(update.Message.Chat.ID, fmt.Sprintf("DONE, I KNOW U NOW! Welcome %s", userData.Name))
 			bot.Send(message)
 
