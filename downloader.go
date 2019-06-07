@@ -22,6 +22,16 @@ type TGPhoto struct {
 	Size   int
 }
 
+type TGVideo struct {
+	Duration int
+	Width    int
+	Height   int
+	MimeType string
+	Thumb    TGPhoto
+	ID       string
+	Size     int
+}
+
 func (f TGPhoto) Download() bool {
 	fmt.Println("TO IMPLEMENT")
 	return true
@@ -33,16 +43,6 @@ func (f TGPhoto) GetID() string {
 
 func (f TGPhoto) GetType() string {
 	return "Photo"
-}
-
-type TGVideo struct {
-	Duration int
-	Width    int
-	Height   int
-	MimeType string
-	Thumb    TGPhoto
-	ID       string
-	Size     int
 }
 
 func (f TGVideo) Download() bool {
