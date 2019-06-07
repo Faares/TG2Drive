@@ -14,7 +14,6 @@ func auth(update TGBotAPI.Update) (isAuth bool, user User) {
 	// check if message from authirzed users and not null
 	if _, ok := BotConfig.Telegram.Authorized[update.Message.From.UserName]; !ok || update.Message == nil {
 		notAuthorizedReport(update)
-		fmt.Println("Not Authorized")
 		return false, User{}
 	}
 
@@ -40,7 +39,7 @@ func auth(update TGBotAPI.Update) (isAuth bool, user User) {
 	}
 
 	// if no password .. please auth, or go to hell
-	if _, ok := Authorized[string(update.Message.Chat.ID)]; !ok {
+	if _, ok := Authorized[strconv.FormatInt(update.Message.Chat.ID, 10)]; !ok {
 		message := TGBotAPI.NewMessage(update.Message.Chat.ID, fmt.Sprintf("Greeting %s, Please use command /login to authenticate u..", userData.Name))
 		bot.Send(message)
 	}

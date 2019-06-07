@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"strconv"
 
 	TGBotAPI "github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -38,7 +39,7 @@ func main() {
 	for update := range updates {
 		defer crashReport(update)
 
-		if _, ok := Authorized[update.Message.From.UserName]; !ok {
+		if _, ok := Authorized[strconv.FormatInt(update.Message.Chat.ID, 10)]; !ok {
 			auth(update)
 			continue
 		}
