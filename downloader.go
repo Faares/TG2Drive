@@ -35,13 +35,10 @@ func (f TGPhoto) GetType() string {
 	return "Photo"
 }
 
-/*
-"video":{"duration":10,"width":1920,"height":1080,"mime_type":"video/mp4","thumb":{"file_id":"AAQEABMgXx8bAAQ-1LxCgAtwK-sgAAIC","file_size":18290,"width":320,"height":180},"file_id":"BAADBAADgQcAAm_0wFMJa8z-C8n7jQI","file_size":11256084}}}]
-*/
 type TGVideo struct {
 	Duration int
 	Width    int
-	height   int
+	Height   int
 	MimeType string
 	Thumb    TGPhoto
 	ID       string
@@ -55,4 +52,8 @@ func (f TGVideo) Download() bool {
 
 func (f TGVideo) GetID() string {
 	return f.ID
+}
+
+func (f TGVideo) GetType() string {
+	return "Video"
 }
