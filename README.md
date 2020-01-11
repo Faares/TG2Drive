@@ -1,3 +1,4 @@
+# [Status]: Deprecated.. 
 # TG2Drive
 
 Telegram Bot for uploading files to Google Drive
